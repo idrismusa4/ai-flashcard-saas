@@ -1,12 +1,84 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Container, TextField, Button, Typography, Box, Card, CardContent, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
 import { doc, collection, writeBatch, getDoc } from 'firebase/firestore';
-//import { db } from './firebase'; // Adjust import
+import { db } from '@/firebase'; // Adjust import path as needed
 import { useUser } from '@clerk/nextjs';
+
+function Flashcard({ front, back }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const flip = useCallback(() => setIsFlipped(!isFlipped), [isFlipped]);
+
+  return (
+    <Card 
+      sx={{
+        cursor: 'pointer',
+        perspective: '1000px', // Added for better 3D effect
+        width: '100%',
+        height: '200px', // Adjust as needed
+      }}
+      onClick={flip}
+    >
+      <Box
+        sx={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          transformStyle: 'preserve-3d',
+          transition: 'transform 0.6s',
+          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+        }}
+      >
+        {/* Front of the card */}
+        <CardContent
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backfaceVisibility: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+            borderRadius: '4px', // Add border radius if needed
+            boxShadow: isFlipped ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Typography variant="h6">Question</Typography>
+          <Typography>{front}</Typography>
+        </CardContent>
+        {/* Back of the card */}
+        <CardContent
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backfaceVisibility: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#f9f9f9',
+            transform: 'rotateY(180deg)',
+            borderRadius: '4px', // Add border radius if needed
+            boxShadow: isFlipped ? '0 4px 8px rgba(0, 0, 0, 0.1)' : 'none',
+          }}
+        >
+          <Typography variant="h6">Answer:</Typography>
+          <Typography>{back}</Typography>
+        </CardContent>
+      </Box>
+    </Card>
+  );
+}
 
 export default function Generate() {
   const [text, setText] = useState('');
@@ -24,7 +96,7 @@ export default function Generate() {
       return;
     }
 
-    if(!user){
+    if (!user) {
       alert('Please sign in to save flashcards.');
       return;
     }
@@ -126,14 +198,7 @@ export default function Generate() {
           <Grid container spacing={2}>
             {flashcards.map((flashcard, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Front:</Typography>
-                    <Typography>{flashcard.front}</Typography>
-                    <Typography variant="h6" sx={{ mt: 2 }}>Back:</Typography>
-                    <Typography>{flashcard.back}</Typography>
-                  </CardContent>
-                </Card>
+                <Flashcard front={flashcard.front} back={flashcard.back} />
               </Grid>
             ))}
           </Grid>
