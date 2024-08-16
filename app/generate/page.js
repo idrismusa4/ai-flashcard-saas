@@ -107,10 +107,12 @@ export default function Generate() {
       const batch = writeBatch(db);
 
       if (userDocSnap.exists()) {
+        console.log("not new")
         const userData = userDocSnap.data();
         const updatedSets = [...(userData.flashcardSets || []), { name: setName }];
         batch.update(userDocRef, { flashcardSets: updatedSets });
       } else {
+        console.log("very new")
         batch.set(userDocRef, { flashcardSets: [{ name: setName }] });
       }
 
