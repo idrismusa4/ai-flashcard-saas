@@ -1,0 +1,48 @@
+.myflashcards-main {
+    width: 94vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 2%;
+    padding-top: 50px;
+}
+
+.flashcards-list {
+    background-color: rgb(233, 233, 248);
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: 15%;
+    padding: 0 2px;
+    gap: 3px;
+    cursor: pointer;
+    overflow-y: auto;
+    /* border-right: 10px solid black; */
+}
+
+.flashcard-item {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 5px;
+    background-color: blue;
+}
+
+.selected {
+    color: blue;
+    border: 2px solid blue;
+    background: white;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+}
