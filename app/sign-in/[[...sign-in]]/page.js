@@ -7,21 +7,6 @@ export default function SignInPage() {
     return (
         <>
             <AppBar position="static" sx={{ backgroundColor: '#3f51b5' }}>
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    Studybug Flashcard Limited Beta Test
-                    </Typography>
-                    <Button color="inherit">
-                        <Link href="/sign-in" passHref>
-                            Login
-                        </Link>
-                    </Button>
-                    <Button color="inherit">
-                        <Link href="/sign-up" passHref>
-                            Sign Up
-                        </Link>
-                    </Button>
-                </Toolbar>
             </AppBar>
             <Box
                 display="flex"

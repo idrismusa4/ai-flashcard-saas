@@ -14,11 +14,11 @@ const pricingPlans = [
     price: "$10/month",
     price_number: 10,
     features: [
-      "Limited Flashcards",
-      "Basic AI Assistance",
-      "Text-Only Flashcards",
-      "Basic Analytics",
-      "Standard Deck Management",
+      "Create up to 1,000 flashcards",
+      "Access to basic templates",
+      "Study on 1 device",
+      "Basic progress tracking",
+      "Limited to 3 shared decks",
     ],
   },
   {
@@ -27,11 +27,12 @@ const pricingPlans = [
     price: "$20/month",
     price_number: 20,
     features: [
-      "Increased Flashcard Limit",
-      "Advanced AI Assistance",
-      "Multimedia Flashcards",
-      "Enhanced Analytics",
-      "Custom Deck Management",
+      "Create up to 5,000 flashcards",
+      "Access to all templates",
+      "Sync across 3 devices",
+      "Advanced progress tracking",
+      "Unlimited shared decks",
+      "Export decks as PDFs",
     ],
   },
   {
@@ -40,14 +41,17 @@ const pricingPlans = [
     price: "$30/month",
     price_number: 30,
     features: [
-      "Unlimited Flashcards",
-      "AI-Powered Adaptive Learning",
-      "Collaborative Decks",
-      "Priority Support",
-      "Custom Branding",
+      "Unlimited flashcards",
+      "Custom templates and themes",
+      "Sync across unlimited devices",
+      "Detailed analytics and insights",
+      "Collaboration on shared decks",
+      "Priority customer support",
+      "Offline access to decks",
     ],
   },
 ];
+
 
 function PricingList() {
   const { isSignedIn, userData } = useAuth();
