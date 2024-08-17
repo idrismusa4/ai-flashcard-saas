@@ -10,21 +10,43 @@ const pricingPlans = [
     title: "Basic Plan",
     price: "$10/month",
     price_number: 10,
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"],
+    features: [
+      "Create up to 1,000 flashcards",
+      "Access to basic templates",
+      "Study on 1 device",
+      "Basic progress tracking",
+      "Limited to 3 shared decks",
+    ],
   },
   {
     title: "Standard Plan",
     price: "$20/month",
     price_number: 20,
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"],
+    features: [
+      "Create up to 5,000 flashcards",
+      "Access to all templates",
+      "Sync across 3 devices",
+      "Advanced progress tracking",
+      "Unlimited shared decks",
+      "Export decks as PDFs",
+    ],
   },
   {
     title: "Premium Plan",
     price: "$30/month",
     price_number: 30,
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"],
+    features: [
+      "Unlimited flashcards",
+      "Custom templates and themes",
+      "Sync across unlimited devices",
+      "Detailed analytics and insights",
+      "Collaboration on shared decks",
+      "Priority customer support",
+      "Offline access to decks",
+    ],
   },
 ];
+
 
 function PricingList() {
   const handleSubmit = async (plan) => {
