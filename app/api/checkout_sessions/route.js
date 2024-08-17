@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { getAuth } from "@clerk/nextjs/server";
 
 const formatAmountForStripe = (amount, currency) => {
   return Math.round(amount * 100);
@@ -11,11 +12,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 //POST Function
 export async function POST(req) {
+  const { userId } = getAuth(req);
   // Read the request body
   const body = await req.json();
 
   // Extract the 'plan' property
-  const { product_name, product_price } = body;
+  const { product_id, product_name, product_price } = body;
 
   try {
     const params = {
@@ -43,6 +45,10 @@ export async function POST(req) {
       cancel_url: `${req.headers.get(
         "Referer"
       )}result?session_id={CHECKOUT_SESSION_ID}`,
+      metadata: {
+        userId,
+        product_id,
+      },
     };
 
     const checkoutSession = await stripe.checkout.sessions.create(params);

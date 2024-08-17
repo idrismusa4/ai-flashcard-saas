@@ -9,8 +9,11 @@ import {
   ListItem,
   Button,
 } from "@mui/material";
+import { useUser } from "@clerk/nextjs";
 
 function PricingPlan({ plan, handleSubmit }) {
+  const { isLoaded } = useUser();
+
   return (
     <Card>
       <CardContent>
@@ -22,13 +25,23 @@ function PricingPlan({ plan, handleSubmit }) {
         </Typography>
         <List>
           {plan.features.map((feature, index) => (
-            <ListItem key={index}>{feature}</ListItem>
+            <ListItem
+              key={index}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {feature}
+            </ListItem>
           ))}
         </List>
         <Button
           variant="contained"
           color="primary"
           fullWidth
+          disabled={!isLoaded}
           onClick={() => handleSubmit(plan)}
         >
           Choose Plan

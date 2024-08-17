@@ -17,12 +17,15 @@
     "@mui/material": "^5.16.7",
     "@stripe/stripe-js": "^4.2.0",
     "firebase": "^10.12.5",
+    "formidable": "^3.5.1",
     "next": "14.2.5",
     "openai": "^4.55.5",
+    "pdf-parse": "^1.1.1",
     "react": "^18",
     "react-dom": "^18",
     "react-router-dom": "^6.26.0",
-    "stripe": "^16.7.0"
+    "stripe": "^16.7.0",
+    "text-from-pdf": "^1.1.2"
   },
   "devDependencies": {
     "eslint": "^8",

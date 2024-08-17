@@ -4,37 +4,66 @@ import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
 import PricingPlan from "./PricingPlan"; // Import the individual plan component
 import getStripe from "@/utils/get-stripe";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const pricingPlans = [
   {
+    id: "basic",
     title: "Basic Plan",
     price: "$10/month",
     price_number: 10,
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"],
+    features: [
+      "Limited Flashcards",
+      "Basic AI Assistance",
+      "Text-Only Flashcards",
+      "Basic Analytics",
+      "Standard Deck Management",
+    ],
   },
   {
+    id: "standard",
     title: "Standard Plan",
     price: "$20/month",
     price_number: 20,
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"],
+    features: [
+      "Increased Flashcard Limit",
+      "Advanced AI Assistance",
+      "Multimedia Flashcards",
+      "Enhanced Analytics",
+      "Custom Deck Management",
+    ],
   },
   {
+    id: "premium",
     title: "Premium Plan",
     price: "$30/month",
     price_number: 30,
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4", "Feature 5"],
+    features: [
+      "Unlimited Flashcards",
+      "AI-Powered Adaptive Learning",
+      "Collaborative Decks",
+      "Priority Support",
+      "Custom Branding",
+    ],
   },
 ];
 
 function PricingList() {
+  const { user } = useUser();
+  const router = useRouter();
+
   const handleSubmit = async (plan) => {
+    if (!user) return router.push("/sign-in");
+
     // return console.log(plan)
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
-        origin: process.env.HOST_ORIGIN,
+        origin: process.env.NEXT_PUBLIC_HOST_ORIGIN,
       },
       body: JSON.stringify({
+        product_id: plan.id,
         product_name: plan.title,
         product_price: plan.price_number,
       }),

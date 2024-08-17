@@ -1,53 +1,65 @@
-'use client'
+"use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 import {
-  Container, TextField, Button, Typography, Box, Card, CardContent, Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
-} from '@mui/material';
-import { doc, collection, writeBatch, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase'; // Adjust import path as needed
-import { useUser } from '@clerk/nextjs';
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
+import { doc, collection, writeBatch, getDoc } from "firebase/firestore";
+import { db } from "@/firebase"; // Adjust import path as needed
+import { useUser } from "@clerk/nextjs";
 
 function Flashcard({ front, back }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const flip = useCallback(() => setIsFlipped(!isFlipped), [isFlipped]);
 
   return (
-    <Card 
+    <Card
       sx={{
-        cursor: 'pointer',
-        perspective: '1000px', // Added for better 3D effect
-        width: '100%',
-        height: '200px', // Adjust as needed
+        cursor: "pointer",
+        perspective: "1000px", // Added for better 3D effect
+        width: "100%",
+        height: "200px", // Adjust as needed
       }}
       onClick={flip}
     >
       <Box
         sx={{
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          transformStyle: 'preserve-3d',
-          transition: 'transform 0.6s',
-          transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.6s",
+          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
         }}
       >
         {/* Front of the card */}
         <CardContent
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
-            backfaceVisibility: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#fff',
-            borderRadius: '4px', // Add border radius if needed
-            boxShadow: isFlipped ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.1)',
+            width: "100%",
+            height: "100%",
+            backfaceVisibility: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            borderRadius: "4px", // Add border radius if needed
+            boxShadow: isFlipped ? "none" : "0 4px 8px rgba(0, 0, 0, 0.1)",
           }}
         >
           <Typography variant="h6">Question</Typography>
@@ -56,20 +68,20 @@ function Flashcard({ front, back }) {
         {/* Back of the card */}
         <CardContent
           sx={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
-            backfaceVisibility: 'hidden',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#f9f9f9',
-            transform: 'rotateY(180deg)',
-            borderRadius: '4px', // Add border radius if needed
-            boxShadow: isFlipped ? '0 4px 8px rgba(0, 0, 0, 0.1)' : 'none',
+            width: "100%",
+            height: "100%",
+            backfaceVisibility: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#f9f9f9",
+            transform: "rotateY(180deg)",
+            borderRadius: "4px", // Add border radius if needed
+            boxShadow: isFlipped ? "0 4px 8px rgba(0, 0, 0, 0.1)" : "none",
           }}
         >
           <Typography variant="h6">Answer:</Typography>
@@ -81,89 +93,117 @@ function Flashcard({ front, back }) {
 }
 
 export default function Generate() {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [flashcards, setFlashcards] = useState([]);
-  const [setName, setSetName] = useState('');
+  const [setName, setSetName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useUser();
+  const [file, setFile] = useState(null);
 
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
 
   const saveFlashcards = async () => {
     if (!setName.trim()) {
-      alert('Please enter a name for your flashcard set.');
+      alert("Please enter a name for your flashcard set.");
       return;
     }
 
     if (!user) {
-      alert('Please sign in to save flashcards.');
+      alert("Please sign in to save flashcards.");
       return;
     }
 
     try {
-      const userDocRef = doc(collection(db, 'users'), user.id);
+      const userDocRef = doc(collection(db, "users"), user.id);
       const userDocSnap = await getDoc(userDocRef);
       const batch = writeBatch(db);
 
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
-        const updatedSets = [...(userData.flashcardSets || []), { name: setName }];
+        const updatedSets = [
+          ...(userData.flashcardSets || []),
+          { name: setName },
+        ];
         batch.update(userDocRef, { flashcardSets: updatedSets });
       } else {
         batch.set(userDocRef, { flashcardSets: [{ name: setName }] });
       }
 
-      const setDocRef = doc(collection(userDocRef, 'flashcardSets'), setName);
+      const setDocRef = doc(collection(userDocRef, "flashcardSets"), setName);
       batch.set(setDocRef, { flashcards });
 
       await batch.commit();
 
-      alert('Flashcards saved successfully!');
+      alert("Flashcards saved successfully!");
       handleCloseDialog();
-      setSetName('');
+      setSetName("");
     } catch (error) {
-      console.error('Error saving flashcards:', error);
-      alert('An error occurred while saving flashcards. Please try again.');
+      console.error("Error saving flashcards:", error);
+      alert("An error occurred while saving flashcards. Please try again.");
     }
   };
 
   const handleSubmit = async () => {
     if (!text.trim()) {
-      alert('Please enter some text to generate flashcards.');
+      alert("Please enter some text to generate flashcards.");
       return;
     }
-  
+
     try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
+      const response = await fetch("/api/generate", {
+        method: "POST",
         body: text,
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Server response:', errorText);
+        console.error("Server response:", errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const responseText = await response.text();
-      console.log('Raw server response:', responseText);
-  
+      console.log("Raw server response:", responseText);
+
       let data;
       try {
         data = JSON.parse(responseText);
       } catch (parseError) {
-        console.error('JSON parse error:', parseError);
-        throw new Error('Failed to parse server response');
+        console.error("JSON parse error:", parseError);
+        throw new Error("Failed to parse server response");
       }
-  
+
       setFlashcards(data);
     } catch (error) {
-      console.error('Error generating flashcards:', error);
-      alert(error.message || 'An error occurred while generating flashcards. Please try again.');
+      console.error("Error generating flashcards:", error);
+      alert(
+        error.message ||
+          "An error occurred while generating flashcards. Please try again."
+      );
     }
   };
-  
+
+  const handleFileChange = async (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const response = await fetch("/api/extract_text", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setText(result.text);
+      } else {
+        console.error("Error:", result.error);
+      }
+    }
+  };
+
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
@@ -188,6 +228,8 @@ export default function Generate() {
         >
           Generate Flashcards
         </Button>
+        <input type="file" accept=".pdf" onChange={handleFileChange} />
+        Upload PDF
       </Box>
 
       {flashcards.length > 0 && (
@@ -205,8 +247,12 @@ export default function Generate() {
         </Box>
       )}
       {flashcards.length > 0 && (
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <Button variant="contained" color="primary" onClick={handleOpenDialog}>
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenDialog}
+          >
             Save Flashcards
           </Button>
         </Box>
