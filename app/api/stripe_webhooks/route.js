@@ -1,4 +1,4 @@
-import { db } from "@/firebase"; // Adjust the path to your config file
+import { db } from "@/lib/firebase/config"; // Adjust the path to your config file
 import { doc, updateDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -29,8 +29,7 @@ export async function POST(request) {
   // Handle the event
   switch (event.type) {
     case "checkout.session.completed":
-      const { userId, product_id: plan_id } =
-        event.data.object.metadata;
+      const { userId, product_id: plan_id } = event.data.object.metadata;
       console.log("checkout.session.completed was successful!");
 
       // Reference the user's document in Firestore

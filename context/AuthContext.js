@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "@/firebase";
+import { db } from "@/lib/firebase/config";
 
 const AuthContext = createContext(null);
 

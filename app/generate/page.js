@@ -17,9 +17,9 @@ import {
   DialogActions,
 } from "@mui/material";
 import { doc, collection, writeBatch, getDoc } from "firebase/firestore";
-import { db } from "@/firebase"; // Adjust import path as needed
+import { db } from "@/lib/firebase/config"; // Adjust import path as needed
 import { useUser } from "@clerk/nextjs";
-import Loading from '../components/loading.js';
+import Loading from "../components/loading.js";
 
 function Flashcard({ front, back }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -94,14 +94,13 @@ function Flashcard({ front, back }) {
 }
 
 export default function Generate() {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [flashcards, setFlashcards] = useState([]);
   const [setName, setSetName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useUser();
   const [file, setFile] = useState(null);
-
 
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
@@ -118,8 +117,8 @@ export default function Generate() {
     }
 
     try {
-      setLoading(true)
-      const userDocRef = doc(collection(db, 'users'), user.id);
+      setLoading(true);
+      const userDocRef = doc(collection(db, "users"), user.id);
       const userDocSnap = await getDoc(userDocRef);
       const batch = writeBatch(db);
 
@@ -138,14 +137,14 @@ export default function Generate() {
       batch.set(setDocRef, { flashcards });
 
       await batch.commit();
-      setLoading(false)
-      alert('Flashcards saved successfully!');
+      setLoading(false);
+      alert("Flashcards saved successfully!");
       handleCloseDialog();
       setSetName("");
     } catch (error) {
-      console.error('Error saving flashcards:', error);
-      setLoading(false)
-      alert('An error occurred while saving flashcards. Please try again.');
+      console.error("Error saving flashcards:", error);
+      setLoading(false);
+      alert("An error occurred while saving flashcards. Please try again.");
     }
   };
 
@@ -156,9 +155,9 @@ export default function Generate() {
     }
 
     try {
-      setLoading(true)
-      const response = await fetch('/api/generate', {
-        method: 'POST',
+      setLoading(true);
+      const response = await fetch("/api/generate", {
+        method: "POST",
         body: text,
       });
 
@@ -178,12 +177,15 @@ export default function Generate() {
         console.error("JSON parse error:", parseError);
         throw new Error("Failed to parse server response");
       }
-      setLoading(false)
+      setLoading(false);
       setFlashcards(data);
     } catch (error) {
-      console.error('Error generating flashcards:', error);
-      setLoading(false)
-      alert(error.message || 'An error occurred while generating flashcards. Please try again.');
+      console.error("Error generating flashcards:", error);
+      setLoading(false);
+      alert(
+        error.message ||
+          "An error occurred while generating flashcards. Please try again."
+      );
     }
   };
 
@@ -208,8 +210,9 @@ export default function Generate() {
     }
   };
 
-  return (
-    loading ? <Loading /> :
+  return loading ? (
+    <Loading />
+  ) : (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
