@@ -4,8 +4,8 @@ import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
 import PricingPlan from "./PricingPlan"; // Import the individual plan component
 import getStripe from "@/utils/get-stripe";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const pricingPlans = [
   {
@@ -50,13 +50,12 @@ const pricingPlans = [
 ];
 
 function PricingList() {
-  const { user } = useUser();
+  const { isSignedIn, userData } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (plan) => {
-    if (!user) return router.push("/sign-in");
+    if (!isSignedIn) return router.push("/sign-in");
 
-    // return console.log(plan)
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
