@@ -4,9 +4,12 @@ import React from "react";
 import { Grid, Container, Typography } from "@mui/material";
 import PricingPlan from "./PricingPlan"; // Import the individual plan component
 import getStripe from "@/utils/get-stripe";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const pricingPlans = [
   {
+    id: "basic",
     title: "Basic Plan",
     price: "$10/month",
     price_number: 10,
@@ -19,6 +22,7 @@ const pricingPlans = [
     ],
   },
   {
+    id: "standard",
     title: "Standard Plan",
     price: "$20/month",
     price_number: 20,
@@ -32,6 +36,7 @@ const pricingPlans = [
     ],
   },
   {
+    id: "premium",
     title: "Premium Plan",
     price: "$30/month",
     price_number: 30,
@@ -49,14 +54,19 @@ const pricingPlans = [
 
 
 function PricingList() {
+  const { isSignedIn, userData } = useAuth();
+  const router = useRouter();
+
   const handleSubmit = async (plan) => {
-    // return console.log(plan)
+    if (!isSignedIn) return router.push("/sign-in");
+
     const checkoutSession = await fetch("/api/checkout_sessions", {
       method: "POST",
       headers: {
-        origin: process.env.HOST_ORIGIN,
+        origin: process.env.NEXT_PUBLIC_HOST_ORIGIN,
       },
       body: JSON.stringify({
+        product_id: plan.id,
         product_name: plan.title,
         product_price: plan.price_number,
       }),

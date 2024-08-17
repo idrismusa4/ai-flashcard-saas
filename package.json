@@ -22,7 +22,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-router-dom": "^6.26.0",
-    "stripe": "^16.7.0"
+    "stripe": "^16.7.0",
+    "text-from-pdf": "^1.1.2"
   },
   "devDependencies": {
     "eslint": "^8",
